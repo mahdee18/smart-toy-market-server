@@ -57,11 +57,18 @@ async function run() {
         app.get("/mytoys", async (req, res) => {
             let query = {};
             if (req.query?.email) {
-                query = { email: req.query.email }
+                query = { email: req.query.email };
             }
-            const result = await toysCollection.find(query).toArray();
-            res.send(result)
-        })
+
+            let sortDirection = 1; // Default sort direction (ascending)
+            if (req.query?.sort === 'desc') {
+                sortDirection = -1; // Sort in descending order
+            }
+
+            const result = await toysCollection.find(query).sort({ price: sortDirection }).toArray();
+            res.send(result);
+        });
+
         app.get("/update/:id", async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
