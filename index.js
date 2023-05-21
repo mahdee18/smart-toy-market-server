@@ -54,20 +54,42 @@ async function run() {
             const result = await toysCollection.findOne(query)
             res.send(result);
         })
+        // app.get("/mytoys", async (req, res) => {
+        //     let query = {};
+        //     if (req.query?.email) {
+        //         query = { email: req.query.email };
+        //     }
+
+        //     let sortDirection = 1; // Default sort direction (ascending)
+        //     if (req.query?.sort === 'desc') {
+        //         sortDirection = -1; // Sort in descending order
+        //     }
+
+        //     const result = await toysCollection.find(query).sort({ price: sortDirection }).toArray();
+        //     res.send(result);
+        // });
         app.get("/mytoys", async (req, res) => {
             let query = {};
             if (req.query?.email) {
-                query = { email: req.query.email };
+              query = { email: req.query.email };
             }
-
-            let sortDirection = 1; // Default sort direction (ascending)
-            if (req.query?.sort === 'desc') {
-                sortDirection = -1; // Sort in descending order
-            }
-
-            const result = await toysCollection.find(query).sort({ price: sortDirection }).toArray();
-            res.send(result);
-        });
+            const result = await toysCollection
+              .find(query)
+              .sort({ price: 1 })
+              .toArray();
+            // res.send(result);
+      
+            // Convert the "price" field to a numeric type for correct sorting
+            const sortedResult = result.map((toy) => ({
+              ...toy,
+              price: parseFloat(toy.price),
+            }));
+      
+            // Sort the array based on the numeric "price" field
+            sortedResult.sort((a, b) => a.price - b.price);
+      
+            res.send(sortedResult);
+          });
 
         app.get("/update/:id", async (req, res) => {
             const id = req.params.id;
