@@ -6,14 +6,11 @@ require('dotenv').config()
 const port = process.env.PORT || 4000
 
 
-
 // Middleware
 app.use(cors())
 app.use(express.json())
 
-
-
-
+// Connect to MongoDB server
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ftqixdj.mongodb.net/?retryWrites=true&w=majority`;
 
 
@@ -30,7 +27,6 @@ async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
         // await client.connect();
-
 
         // Create Collection
 
@@ -54,20 +50,7 @@ async function run() {
             const result = await toysCollection.findOne(query)
             res.send(result);
         })
-        // app.get("/mytoys", async (req, res) => {
-        //     let query = {};
-        //     if (req.query?.email) {
-        //         query = { email: req.query.email };
-        //     }
 
-        //     let sortDirection = 1; // Default sort direction (ascending)
-        //     if (req.query?.sort === 'desc') {
-        //         sortDirection = -1; // Sort in descending order
-        //     }
-
-        //     const result = await toysCollection.find(query).sort({ price: sortDirection }).toArray();
-        //     res.send(result);
-        // });
         app.get("/mytoys", async (req, res) => {
             let query = {};
             if (req.query?.email) {
